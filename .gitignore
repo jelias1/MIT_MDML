@@ -1,0 +1,25 @@
+# Docker image files
+*.tar
+
+# MDML specific
+.config.json
+.sessions.json
+.sessions.json*
+.config.json*
+#mosquitto/wordpassfile.txt
+#mosquitto/acl_file.txt
+grafana_mysqldb/data
+influxdb/lib
+mdml_register/MinIO_policies/readwrite_*
+mdml_register/config.json
+mdml_register/config_old.json
+minio/mnt
+node_red/data/context
+node_red/data/saved_data/
+node_red/data/*.backup
+
+# AWS creds
+.aws
+
+# BIS S3 
+.s3cfg

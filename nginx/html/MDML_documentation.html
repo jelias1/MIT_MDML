@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>MDML Documentation</title>
+        <script src="https://cdn.jsdelivr.net/npm/showdown@latest/dist/showdown.min.js"></script>
+        <style>
+            body {
+                width: 75%;
+                margin: auto;
+            }
+        </style>
+        <link rel="shortcut icon" href="assets/favicon.ico"></link>
+    </head>
+    <body>
+    </body>
+    <script>
+        var rawFile = new XMLHttpRequest();
+        var host = window.location.host
+        rawFile.open("GET", 'https://' + host + '/MDML_documentation.md')
+        rawFile.onload = function() {
+            var converter = new showdown.Converter(),
+                text = rawFile.response,
+                html = converter.makeHtml(text);
+            console.log(document.body)
+            document.body.innerHTML = html;
+        }
+        rawFile.send(null);
+
+    </script>
+</html>

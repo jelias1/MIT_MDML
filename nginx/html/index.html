@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>MDML Home</title>
+        <script src="js/particles.min.js"></script>
+        <script src="js/app.js"></script>
+        <link rel="stylesheet" href="css/index.css"></link>
+        <link rel="shortcut icon" href="assets/favicon.ico"></link>
+    </head>
+    <body>
+        <div class="content">
+            <div class="content-header">
+                <h1>Manufacturing Data & Machine Learning Layer - <span style="color: blue">BETA</span></h1>
+            </div>
+            <div>
+                <h3 class="content-header" id="links">Links</h3>
+            </div>
+            <div class="card-holder">
+
+                <a href="/grafana">
+                    <div class="card">
+                        <div class="card-image" style="background-image: url('../assets/grafana_preview.PNG')"></div>
+                        <div class="card-contents">
+                            <h3>Real-Time Dashboards</h3>
+                        </div>
+                    </div>
+                </a>
+
+                <a onclick="location.href = 'http:\/\/' + window.location.host + ':9000/minio'">
+                    <div class="card">
+                        <div class="card-image" style="background-image: url('../assets/minio_preview.PNG')"></div>
+                        <div class="card-contents">
+                            <h3>Data Storage</h3>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="https://test.pypi.org/project/mdml-client/">
+                    <div class="card">
+                        <div class="card-image" style="background-image: url('../assets/pypi_test_preview.PNG')"></div>
+                        <div class="card-contents">
+                            <h3>Python Client</h3>
+                        </div>
+                    </div>
+                </a>
+
+            </div>
+
+            <div class="contact-us">
+                <h3><a onclick="location.href = 'https:\/\/' + window.location.host + '/register.html'">Register</a></h3>
+            </div>
+        </div>
+        
+        <div id="particles-js" style="background-color: rgb(3, 3, 3); background-size: cover; background-repeat: no-repeat;"></div>
+
+    </body>
+</html>

@@ -1,0 +1,144 @@
+version: '3.7'
+
+services:
+
+    nginx:
+        image: nginx
+        restart: always
+        ports:
+            - 80:80
+            - 443:443
+        volumes:
+            - ${PRIVATE_KEY_PATH}:/etc/ssl/private/nginx-selfsigned.key
+            - ${CERT_PATH}:/etc/ssl/certs/nginx-selfsigned.crt
+            - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+            - ./nginx/html:/usr/share/nginx/html
+        depends_on:
+            - node_red
+
+    mosquitto:
+        image: mosquitto
+        restart: always
+        ports:
+            - 1883:1883
+        volumes:
+            - ./mosquitto/wordpassfile.txt:/mosquitto/config/wordpassfile.txt
+            - ./mosquitto/acl_file.txt:/mosquitto/config/acl_file.txt
+            - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+            - ./mosquitto/mosquitto.log:/mosquitto/log/mosquitto.log
+
+    node_red:
+        image: node_red
+        user: root
+        restart: always
+        ports:
+            - 1880:1880
+        environment: 
+            MDML_NODE_RED_PASS: "${MDML_NODE_RED_PASS}"
+        volumes:
+            - ./node_red/data:/data
+        depends_on:
+            - influxdb
+            - mosquitto
+        
+
+    influxdb:
+        image: influxdb
+        restart: always
+        ports:
+            - 8086:8086
+        environment:
+            INFLUXDB_DB: "merf"
+            INFLUXDB_HTTP_AUTH_ENABLED: "true"
+            INFLUXDB_ADMIN_USER: "admin"
+            INFLUXDB_ADMIN_PASSWORD: "${MDML_INFLUXDB_SECRET}"
+            INFLUXDB_COORDINATOR_WRITE_TIMEOUT: "60s"
+        volumes:
+            - ./influxdb/lib:/var/lib/influxdb
+
+
+    sys_influxdb:
+        image: influxdb
+        restart: always
+        ports:
+            - 8087:8087
+        environment:
+            INFLUXDB_HTTP_BIND_ADDRESS: ":8087"
+            INFLUXDB_DB: "merf"
+            INFLUXDB_HTTP_AUTH_ENABLED: "true"
+            INFLUXDB_ADMIN_USER: "admin"
+            INFLUXDB_ADMIN_PASSWORD: "${MDML_INFLUXDB_SECRET}"
+        volumes:
+            - ./sys_influxdb/lib:/var/lib/influxdb
+
+
+    minio:
+        image: minio
+        restart: always
+        ports:
+            - 9000:9000
+        environment:
+            MINIO_ACCESS_KEY: "admin"
+            MINIO_SECRET_KEY: "${MDML_MINIO_SECRET}"
+        volumes:
+            - ./minio/mnt/data:/data
+
+    grafana:
+        image: grafana
+        restart: always
+        user: root
+        ports:
+            - 3000:3000
+        environment:
+            GF_SERVER_PROTOCOL: "https"
+            GF_SERVER_HTTP_ADDR: "0.0.0.0"
+            GF_SERVER_DOMAIN: "${MDML_HOST}"
+            GF_SERVER_ROOT_URL: "https://${MDML_HOST}/grafana/"
+            GF_SERVER_CERT_FILE: "/etc/ssl/certs/nginx-selfsigned.crt"
+            GF_SERVER_CERT_KEY: "/etc/ssl/nginx-selfsigned.key"
+            GF_SECURITY_ADMIN_PASSWORD: "${MDML_GRAFANA_SECRET}"
+            GF_DATABASE_URL: "mysql://root:${MDML_GRAFDB_ROOT_SECRET}@grafana_mysqldb:3306/grafana"
+            GF_INSTALL_PLUGINS: "ryantxu-ajax-panel,natel-plotly-panel,bessler-pictureit-panel,larona-epict-panel"
+        volumes:
+            - ${PRIVATE_KEY_PATH}:/etc/ssl/nginx-selfsigned.key
+            - ${CERT_PATH}:/etc/ssl/certs/nginx-selfsigned.crt
+        depends_on:
+            - grafana_mysqldb
+            - influxdb
+
+    grafana_mysqldb:
+        image: grafana_mysqldb
+        restart: always
+        ports:
+            - 3306:3306
+        environment:
+            MYSQL_ROOT_PASSWORD: "${MDML_GRAFDB_ROOT_SECRET}"
+            MYSQL_DATABASE: "grafana"
+            MYSQL_USER: "grafana"
+            MYSQL_PASSWORD: "${MDML_GRAFDB_SECRET}"
+        volumes:
+            - ./grafana_mysqldb/data:/var/lib/mysql
+
+    register_account:
+        image: register_account
+        command: go run /root/register_mdml_user.go
+        restart: always
+        ports:
+            - 8184:8184
+        environment: 
+            HOSTNAME: "${MDML_HOST}"
+            MDML_GRAFANA_SECRET: "${MDML_GRAFANA_SECRET}"
+        volumes:
+            - ./mdml_register/MinIO_policies:/root/MinIO_policies
+            - ./mdml_register/register_mdml_user.go:/root/register_mdml_user.go
+            - ./mdml_register/add_mqtt_acl.sh:/root/add_mqtt_acl.sh
+            - ./mdml_register/create_minio_bucket.py:/root/create_minio_bucket.py
+            - ./mdml_register/config.json:/root/.mc/config.json
+            - ./mosquitto/wordpassfile.txt:/etc/mosquitto/wordpassfile.txt
+            - ./mosquitto/acl_file.txt:/etc/mosquitto/acl_file.txt
+            - ./mosquitto/mosquitto.conf:/etc/mosquitto/mosquitto.conf
+            - ${PRIVATE_KEY_PATH}:/etc/ssl/nginx-selfsigned.key
+            - ${CERT_PATH}:/etc/ssl/certs/nginx-selfsigned.crt
+        depends_on:
+            - nginx
+            - grafana_mysqldb

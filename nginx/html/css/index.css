@@ -1,0 +1,110 @@
+.anl-logo {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+}
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.particles-js {
+  width: 200%;
+  height: 200%;
+  position: fixed;
+  z-index: -1;
+}
+
+.content {
+  position: absolute;
+  top: 10%;
+  left: 20%;
+  width: 60%;
+  height: 70%;
+  z-index: 999;
+  background-color: #CDC;
+  opacity: 1;
+  padding: 5px;
+  border-radius: 5px;
+}
+.content-header {
+  position: relative;
+  left: 7.5%;
+  width: 85%;
+  text-align: center;
+}
+
+#links {
+  margin-top: 4%;
+}
+.card-holder {
+  width: 100%;
+  height: 25%;
+  display: table;
+  clear: both;
+}
+
+.card-holder a {
+  cursor: pointer;
+}
+
+.card {
+  margin-left: 3.333%;
+  margin-right: 3.333%;
+  float: left;
+  width: 26.666%;
+  height: 20%;
+  background-size: 100% 100%;
+}
+
+.card-image {
+  width: 26.666%;
+  height: 20%;
+  background-size: 100% 100%;
+  position: absolute;
+}
+
+.card-contents {
+  width: 26.666%;
+  height: 20%;
+  position: absolute;
+}
+
+.card-contents h3 {
+  opacity: 0;
+  margin: auto;
+  text-align: center;
+}
+
+.card:hover .card-image {
+  filter: blur(2px);
+  -webkit-filter: blur(2px);
+}
+
+.card:hover .card-contents {
+  opacity: 1;
+  background-color: rgba(120, 120, 120, 0.5);
+  
+}
+.card:hover .card-contents h3 {
+  opacity: 1;
+  color: white;
+  text-emphasis-color: black;
+  margin-top: 25%;
+}
+
+.contact-us {
+  /* position: relative; */
+  /* top: 90%; */
+  text-align: center;
+  /* display: inline-block; */
+}
+.contact-us h3 {
+  display: inline-block;
+  margin: 10px;
+  cursor: pointer;
+  color: blue;
+  text-decoration: underline;
+}
