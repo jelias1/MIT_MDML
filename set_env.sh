@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Change these lines as necessary
-export MDML_HOST="146.139.77.100"
-export PRIVATE_KEY_PATH="/etc/pki/nginx/private/server.key"
-export CERT_PATH="/etc/pki/nginx/server.crt"
+export MDML_HOST="52.91.127.47"
+export PRIVATE_KEY_PATH="/etc/ssl/private/nginx-selfsigned.key"
+export CERT_PATH="/etc/ssl/certs/nginx-selfsigned.crt"
 
 # All admin passwords are retrieved from AWS' Secrets Manager.
 # Change the passwords here as necessary
